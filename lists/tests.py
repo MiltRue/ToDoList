@@ -1,6 +1,13 @@
 from django.test import TestCase
+from django.http import HttpRequest
+from lists.views import home_page
 
-# Create your tests here.
-class PracticeTest(TestCase):
-    def test_failure(self):
-        self.assertEqual(1+1,3)
+
+class HomePageTest(TestCase):
+    def test_home_page_html_return(self):
+        request = HttpRequest()
+        response = home_page(request)
+        html = response.content.decode("utf8")
+        self.assertIn("<title>To-Do lists</title>",html)
+        self.assertTrue(html.startswith("<html>"))
+        self.assertTrue(html.endswith("</html>"))
