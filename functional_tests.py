@@ -34,14 +34,19 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element(By.ID, "id_list_table")
         rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertTrue(
-            any(row.text == "1: Eat chicken nuggets" for row in rows),
-            "New to-do item did not appear in table",)
+        self.assertIn("1: Eat chicken nuggets", [row.text for row in rows])
 
         # We can add another item, "Eat french fries"
-        self.fail("Finish the test!")
+        inputbox = self.browser.find_element(By.ID, "id_new_item")
+        inputbox.send_keys("Eat french fries")
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # Another page update, showing both items
+        table = self.browser.find_element(By.ID, "id_list_table")
+        rows = table.find_elements(By.TAG_NAME, "tr")
+        self.assertIn("1: Eat chicken nuggets", [row.text for row in rows])
+        self.assertIn("2: Eat french fries", [row.text for row in rows])
 
         # We're happy the app works, so we log off
 
