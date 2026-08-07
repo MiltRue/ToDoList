@@ -10,6 +10,11 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element(By.ID, "id_list_table")
+        rows = table.find_elements(By.TAG_NAME, "tr")
+        self.assertIn(row_text, [row.text for row in rows])
+
     def test_can_start_todo_list(self):
         # Check out this sick to-do app homepage!
         self.browser.get("http://localhost:8000")
@@ -31,10 +36,7 @@ class NewVisitorTest(unittest.TestCase):
         # The list now reads "1: Eat chicken nuggets"
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-
-        table = self.browser.find_element(By.ID, "id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertIn("1: Eat chicken nuggets", [row.text for row in rows])
+        self.check_for_row_in_list_table("1: Eat chicken nuggets")
 
         # We can add another item, "Eat french fries"
         inputbox = self.browser.find_element(By.ID, "id_new_item")
@@ -43,10 +45,9 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
 
         # Another page update, showing both items
-        table = self.browser.find_element(By.ID, "id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertIn("1: Eat chicken nuggets", [row.text for row in rows])
-        self.assertIn("2: Eat french fries", [row.text for row in rows])
+        self.check_for_row_in_list_table("1: Eat chicken nuggets")
+        self.check_for_row_in_list_table("2: Eat french fries")
+
 
         # We're happy the app works, so we log off
 
